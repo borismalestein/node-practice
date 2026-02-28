@@ -1,3 +1,6 @@
+import { energyChartsApiUrl } from "./config/constants.js";
+import { useFetch } from "./utils/useFetch.js";
+
 const Delays = {
   Short: 500,
   Medium: 2000,
@@ -33,3 +36,20 @@ export async function greeter(name: any) {
 greeter('test project').then((greeting) => console.log(greeting));
 
 console.log('This will be logged before the greeting, because greeter is asynchronous.');
+console.log(`The API URL is: ${energyChartsApiUrl}`);
+
+const fetchData = async (): Promise<void> => {
+  try {
+    const response = await useFetch('GET', '/price?bzn=NL&start=2025-02-26&end=2025-02-27');
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+fetchData();
