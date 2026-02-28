@@ -11,3 +11,6 @@ export interface PriceData {
   unit: string,
   deprecated: boolean
 }
+
+export type TimePriceMap = Map<string, { total: number, count: number }>
+export type MinMaxAverage = { time: string, average: number }

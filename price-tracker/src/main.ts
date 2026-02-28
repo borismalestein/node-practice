@@ -1,55 +1,14 @@
-import { energyChartsApiUrl } from "./config/constants.js";
-import { useFetch } from "./utils/useFetch.js";
+import { fetchData } from "./fetchData.js";
+import { handleData } from "./handleData.js";
 
-const Delays = {
-  Short: 500,
-  Medium: 2000,
-  Long: 5000,
-};
+console.log('Fetching price data for NL between 2026-01-26 and 2026-01-26...\n');
 
-/**
- * Returns a Promise<string> that resolves after a given time.
- *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - A number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
- */
-function delayedHello(
-  name: string,
-  delay: number = Delays.Medium,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
-}
-
-// Please see the comment in the .eslintrc.json file about the suppressed rule!
-// Below is an example of how to use ESLint errors suppression. You can read more
-// at https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-export async function greeter(name: any) {
-  // The name parameter should be of type string. Any is used only to trigger the rule.
-  return await delayedHello(name, Delays.Medium);
-}
-
-greeter('test project').then((greeting) => console.log(greeting));
-
-console.log('This will be logged before the greeting, because greeter is asynchronous.');
-console.log(`The API URL is: ${energyChartsApiUrl}`);
-
-const fetchData = async (): Promise<void> => {
-  try {
-    const response = await useFetch('GET', '/price?bzn=NL&start=2025-02-26&end=2025-02-27');
-    console.log(response);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Fetch error:', error);
+fetchData('/price?bzn=NL&start=2026-01-26&end=2026-01-26').then(
+  (data) => handleData(data)
+).catch(
+  (error) => console.error('Error handling data:', error)
+).finally(
+  () => {
+      console.log('\nDisclaimer: it only calculates the average price for each time slot across all days, so it may not reflect the actual price at that time in the future.');
   }
-}
-
-fetchData();
+);
